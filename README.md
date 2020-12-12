@@ -1,2 +1,1 @@
-This is the Main Repository
-<br>merge test
+Merge test
