@@ -168,7 +168,7 @@ class employee():
                         print("\tName:", item["name"], ", Quantity:", str(item["quantity"]))
                         choice = input("\tDo you wish to Delete? (y/n) : ").lower()
                         if (choice == "y"):
-                            del cartList[i]
+                            del cartList[index]
                             break
                     elif similar(name, item["name"]) >= 0.6:
                         suggestionList.append(index)
