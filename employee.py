@@ -104,8 +104,8 @@ class employee():
                             if choice == "y":
                                 print("Available Quantity:", str(productList[index]["quantity"]))
                                 quantity = int(input("\tEnter Quantity : "))
-                                if quantity <= product['quantity']:
-                                    amount=quantity*product['price']
+                                if quantity <= productList[index]["quantity"]:
+                                    amount=quantity*productList[index]['price']
                                     cartList.append({'name':productList[index]["name"], 'quantity':quantity, 'rate':productList[index]['price'], 'amount': amount})
                                     break
                                 else:
