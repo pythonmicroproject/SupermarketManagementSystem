@@ -50,7 +50,7 @@ def runEmployee():
         if choice == 1:
             user.viewInventory()
         elif choice == 2:
-            pass
+            user.cart()
         elif choice == 3:
             pass
         elif choice == 4:
