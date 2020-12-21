@@ -1,13 +1,100 @@
 import pickle
 import os
 from difflib import SequenceMatcher
+from datetime import datetime
 
 productFile = "productFile.txt"  # name and path of the file containg products list
+employeeFile = "employeeFile.txt" # name and path of the file containg employee list
+salesFile = "salesFile.txt"
+
+def listInitializer(file):
+    if os.path.exists(file):  # True if file exists
+        if os.stat(file).st_size == 0:  # True if file is empty
+            list = []
+        else:
+            with open(file, "rb") as f:
+                list = pickle.load(f)
+    else:
+        list = []
+    return list
+
+def writeFile(file, list):
+    with open(file, "wb") as f:
+        pickle.dump(list, f)
+
+def clear():
+    # for windows
+    if os.name == 'nt':
+        os.system('cls')
+    # for mac and linux(os.name is 'posix')
+    else:
+        os.system('clear')
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 class manager():
     def __init__(self):
         self.name = ""
         self.password = ""
+
+    def managerLogin(self):
+        defaultPassword = "admin"
+        clear()
+        print("\t- Manager Login -")
+        password = input("\tEnter Password : ").lower()
+        if password == defaultPassword:
+            input("\tWelcome Manager !")
+            return True
+        else:
+            input("Incorrect Password, Please try again !")
+            return False
+
+    def addEmployee(self):
+        global employeeFile
+        clear()
+        print("\t- New Employee -")
+        name = input("\tEnter Name : ").title()
+        userName = input("\tEnter User Name : ").lower()
+        password = input("\tEnter Password : ").lower()
+        print("\tPassword :",password)
+        employeeList = listInitializer(employeeFile)
+        employeeList.append({'name':name, 'userName':userName, 'password':password})
+        writeFile(employeeFile, employeeList)
+        input("Employee Added !")
+
+    def deleteEmployee(self):
+        global employeeFile
+        clear()
+        print("\t- Delete Employee -")
+        userName = input("\tEnter the User Name of the employee you wish to delete : ").lower()
+        employeeList = listInitializer(employeeFile)
+        if any(employee['userName'] == userName for employee in employeeList):
+            for index, employee in enumerate(employeeList):
+                if employee['userName'] == userName:
+                    print("\tName:", employee['name'], ", User Name:", employee['userName'], ", Password:",employee['password'])
+                    choice = input("\tDo you wish to Delete? (y/n) : ").lower()
+                    if (choice == "y"):
+                        del employeeList[index]
+                        writeFile(employeeFile, employeeList)
+                        input("Employee Deleted")
+                        break
+                    else:
+                        input("Cancelled")
+        else:
+            input("No such employee found !")
+
+    def viewEmployee(self):
+        global employeeFile
+        clear()
+        employeeList = listInitializer(employeeFile)
+        col_width = 30
+        header = ["NAME:", "USER NAME:", "PASSWORD:"]
+        print("-" * 28, "Employee List", "-" * 30, "\n")
+        print("".join(word.ljust(col_width) for word in header))
+        for employee in employeeList:
+            print("".join(str(data).ljust(col_width) for data in employee.values()))
+        print("\n")
+        input("Press Enter to continue...")
 
     def viewInventory(self):
         global productFile
@@ -21,12 +108,14 @@ class manager():
             productList = []
         col_width = 30
         header = ["NAME:", "QUANTITY:", "PRICE:"]
+        clear()
         print("\n")
         print("-" * 28, "INVENTORY", "-" * 30, "\n")
         print("".join(word.ljust(col_width) for word in header))
         for product in productList:
             print("".join(str(data).ljust(col_width) for data in product.values()))
         print("\n")
+        input("Press Enter to continue...")
 
     def addProduct(self):
         global productFile
@@ -39,6 +128,7 @@ class manager():
         else:
             productList = []
         while True:
+            clear()
             flag = 0
             print("\t- Adding Product -")
             name = input("\tEnter Name : ").title()
@@ -57,11 +147,10 @@ class manager():
                 break
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
+        input("Press Enter to continue...")
 
     def updateProduct(self):
         global productFile
-        def similar(a, b):
-            return SequenceMatcher(None, a, b).ratio()
         if os.path.exists(productFile):  # True if file exists
             if os.stat(productFile).st_size == 0:  # True if file is empty
                 productList = []
@@ -72,6 +161,7 @@ class manager():
             productList = []
         flag = 0
         suggestionList = []
+        clear()
         print("\t- Update Product -")
         name = input("\tEnter the Name of the product you wish to Update : ").title()
         for index, product in enumerate(productList):
@@ -110,11 +200,10 @@ class manager():
         suggestionList.clear()
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
+        input("Press Enter to continue...")
 
     def deleteProduct(self):
         global productFile
-        def similar(a, b):
-            return SequenceMatcher(None, a, b).ratio()
         if os.path.exists(productFile):  # True if file exists
             if os.stat(productFile).st_size == 0:  # True if file is empty
                 productList = []
@@ -126,6 +215,7 @@ class manager():
         flag = 0
         index = 0
         suggestionList = []
+        clear()
         print("\t- Delete Product -")
         name = input("\tEnter the Name of the product you wish to Delete : ").title()
         for i, product in enumerate(productList):
@@ -180,3 +270,17 @@ class manager():
         suggestionList.clear()
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
+        input("Press Enter to continue...")
+
+    def viewSales(self):
+        global salesFile
+        salesList = listInitializer(salesFile)
+        clear()
+        print("-" * 40,"RETAIL SALES", "-" * 47, "\n")
+        print("-" * 100)
+        print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "TOTAL:".rjust(10))
+        print("-" * 100)
+        for sales in salesList:
+            print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+        print("-" * 100)
+        input("Press Enter to continue...")
