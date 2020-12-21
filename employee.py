@@ -4,6 +4,10 @@ from difflib import SequenceMatcher
 from datetime import datetime
 
 productFile = "productFile.txt"  # name and path of the file containg products list
+employeeFile = "employeeFile.txt" # name and path of the file containg employee list
+billGeneratorFile = "billGeneratorFile.txt"
+salesFile = "salesFile.txt"
+
 def clear():
     # for windows
     if os.name == 'nt':
@@ -11,15 +15,79 @@ def clear():
     # for mac and linux(os.name is 'posix')
     else:
         os.system('clear')
+
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
+
+def listInitializer(file):
+    if os.path.exists(file):  # True if file exists
+        if os.stat(file).st_size == 0:  # True if file is empty
+            list = []
+        else:
+            with open(file, "rb") as f:
+                list = pickle.load(f)
+    else:
+        list = []
+    return list
+
+def writeFile(file, list):
+    with open(file, "wb") as f:
+        pickle.dump(list, f)
+
+def billNumberGenerator():
+    global billGeneratorFile
+    billDictionary = {}
+    now = datetime.now()
+    if os.path.exists(billGeneratorFile):  # True if file exists
+        if os.stat(billGeneratorFile).st_size == 0:  # True if file is empty
+            billDictionary = {"counter":0, "year":now.year}
+        else:
+            with open(billGeneratorFile, "rb") as f:
+                billDictionary = pickle.load(f)
+    else:
+        billDictionary = {"counter":0, "year":now.year}
+
+    if now.year > billDictionary['year']:
+        billDictionary['counter'] = 0
+        billDictionary['year'] = now.year
+
+    billDictionary['counter'] = billDictionary['counter'] + 1
+    billNumber = str(billDictionary['counter'])+"/"+now.strftime("%Y")
+    writeFile(billGeneratorFile, billDictionary)
+    return billNumber
 
 class employee():
     def __init__(self):
         self.name=""
+        self.userName=""
         self.age=0
         self.password=""
         self.sale=0
+
+    def employeeLogin(self):
+        global employeeFile
+        clear()
+        print("\t- Employee Login -")
+        userName = input("\tEnter User Name : ").lower()
+        password = input("\tEnter Password : ").lower()
+        employeeList = listInitializer(employeeFile)
+        flag = 0
+        for employee in employeeList:
+            if employee['userName'] == userName:
+                flag = 1
+                if employee['password'] == password:
+                    self.name = employee["name"]
+                    self.userName = userName
+                    self.password = password
+                    print("\tWelcome "+self.name+" !",end="")
+                    input()
+                    return True
+                else:
+                    input("Incorrect Password, Please try again !")
+                    return False
+        if flag == 0:
+            input("Incorrect Username & Password, Please try again !")
+            return False
 
     def viewInventory(self):
         global productFile
@@ -33,15 +101,18 @@ class employee():
             productList = []
         col_width = 30
         header = ["NAME:", "QUANTITY:", "PRICE:"]
+        clear()
         print("\n")
         print("-" * 28, "INVENTORY", "-" * 30, "\n")
         print("".join(word.ljust(col_width) for word in header))
         for product in productList:
             print("".join(str(data).ljust(col_width) for data in product.values()))
         print("\n")
+        input("Press Enter to continue...")
 
     def cart(self):
         global productFile
+        global salesFile
         if os.path.exists(productFile):  # True if file exists
             if os.stat(productFile).st_size == 0:  # True if file is empty
                 productList = []
@@ -208,6 +279,7 @@ class employee():
                         with open(productFile, "wb") as f:
                             pickle.dump(productList, f)
                         summary=["ITEMS: "+str(items), "QTY: "+str(qty), "TOTAL: "+str(total)]
+                        billNumber = billNumberGenerator()
                         print("-" * 40,"RETAIL BILL", "-" * 47, "\n")
                         print(" "*35,"THE GARRISON PVT LTD.")
                         print(" "*41,"Kakkanad")
@@ -216,8 +288,8 @@ class employee():
                         print("-" * 100)
                         print("ISSUED TO:".ljust(80),"Date: "+date)
                         print(customerName.ljust(80),"Time: "+time)
-                        print(customerNumber.ljust(80),"Bill No: 20/7824")
-                        print(" "*81+"Cashier: Emp Name")
+                        print(customerNumber.ljust(80),"Bill No: "+billNumber)
+                        print(" "*81+"Cashier: "+self.userName)
                         print("-" * 100)
                         print("SN.".ljust(5),"".join(word.ljust(col_width) for word in header))
                         print("-" * 100)
@@ -233,6 +305,12 @@ class employee():
                         print("\n")
                         print("\t\t\t\t    THANK YOU, VISIT AGAIN")
                         print("-" * 100)
+                        salesList = listInitializer(salesFile)
+                        salesList.append({
+                        'date':date, 'time':time, 'customerName':customerName, 'customerNumber':customerNumber, 'employeeUserName':self.userName,
+                        'billNumber':billNumber, 'cartList':cartList, 'quantity':qty, 'items':items, 'total':total
+                        })
+                        writeFile(salesFile,salesList)
                         input("Press any key to continue . . .")
                         total=0
                         items=0
@@ -243,4 +321,4 @@ class employee():
             elif choice == 5:
                 break
             else:
-                print("Please enter a valid option !\n")
+                input("Please enter a valid option !\n")
