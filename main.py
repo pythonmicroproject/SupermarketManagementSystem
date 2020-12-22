@@ -16,21 +16,23 @@ def runManager():
         return
     while True:
         clear()
-        print("-" * 30, "MANAGER MENU", "-" * 33, "\n")
+        print(" MANAGER MENU ".center(100,'-'),end= "\n\n")
         print("\t1.Inventory Management\n")
         print("\t2.Employee Management\n")
         print("\t3.Sales Management\n")
         print("\t4.LOG OUT\n")
+        print("-"*100, end="\n\n")
         choice = input("Enter choice : ")
         if choice == '1':
             while True:
                 clear()
-                print("-" * 30, "Inventory Management", "-" * 33, "\n")
+                print(" INVENTORY MANAGEMENT ".center(100,'-'),end= "\n\n")
                 print("\t1.View Inventory\n")
                 print("\t2.Add New Product\n")
                 print("\t3.Update Product\n")
                 print("\t4.Delete Product\n")
                 print("\t5.Go Back...\n")
+                print("-"*100, end="\n\n")
                 choice = input("Enter choice : ")
                 if choice == '1':
                     user.viewInventory()
@@ -48,11 +50,12 @@ def runManager():
         elif choice == '2':
             while True:
                 clear()
-                print("-" * 30, "Employee Management", "-" * 33, "\n")
+                print(" EMPLOYEE MANAGEMENT ".center(100,'-'),end= "\n\n")
                 print("\t1.Add New Employee\n")
                 print("\t2.Delete Employee\n")
                 print("\t3.Employee List\n")
                 print("\t4.Go Back...\n")
+                print("-"*100, end="\n\n")
                 choice = input("Enter choice : ")
                 if choice == '1':
                     user.addEmployee()
@@ -68,9 +71,10 @@ def runManager():
         elif choice == '3':
             while True:
                 clear()
-                print("-" * 30, "Sales Management", "-" * 33, "\n")
+                print(" SALES MANAGEMENT ".center(100,'-'),end= "\n\n")
                 print("\t1.View Sales\n")
                 print("\t2.Go Back...\n")
+                print("-"*100, end="\n\n")
                 choice = input("Enter choice : ")
                 if choice == '1':
                     user.viewSales()
@@ -78,7 +82,6 @@ def runManager():
                     break
                 else:
                     input("Please enter a valid option !\n")
-
 
         elif choice == '4':
             break
@@ -91,18 +94,38 @@ def runEmployee():
         return
     while True:
         clear()
-        print("-" * 30, "EMPLOYEE MENU", "-" * 33, "\n")
+        print(" EMPLOYEE MENU ".center(100,'-'),end= "\n\n")
         print("\t1.View Inventory\n")
         print("\t2.Billing\n")
-        print("\t3.Update Account\n")
+        print("\t3.Account\n")
         print("\t4.LOG OUT\n")
+        print("-"*100, end="\n\n")
         choice = int(input("Enter choice : "))
         if choice == 1:
             user.viewInventory()
         elif choice == 2:
             user.cart()
         elif choice == 3:
-            pass
+            while True:
+                clear()
+                print(" ACCOUNT ".center(100,'-'),end= "\n\n")
+                print("\t1.My Sales\n")
+                print("\t2.....\n")
+                print("\t3.....\n")
+                print("\t4.Go Back...\n")
+                print("-"*100, end="\n\n")
+                choice = input("Enter choice : ")
+                if choice == '1':
+                    user.mySales()
+                elif choice == '2':
+                    pass
+                elif choice == '3':
+                    pass
+                elif choice == '4':
+                    break
+                else:
+                    input("Please enter a valid option !\n")
+
         elif choice == 4:
             break
         else:
@@ -110,16 +133,17 @@ def runEmployee():
 
 while True:
     clear()
-    print("-" * 30, "MENU", "-" * 33, "\n")
+    print(" MENU ".center(100,"-"),end="\n\n")
     print("\t1.Employee\n")
     print("\t2.Manager\n")
     print("\t3.EXIT\n")
-    choice = int(input("Enter choice : "))
-    if choice == 1:
+    print("-"*100, end="\n\n")
+    choice = input("Enter choice : ")
+    if choice == '1':
         runEmployee()
-    elif choice == 2:
+    elif choice == '2':
         runManager()
-    elif choice == 3:
+    elif choice == '3':
         break
     else:
         input("Please enter a valid option !\n")
