@@ -40,32 +40,38 @@ class manager():
     def managerLogin(self):
         defaultPassword = "admin"
         clear()
-        print("\t- Manager Login -")
+        print(" MANAGER LOGIN ".center(100,"-"), end="\n\n")
         password = input("\tEnter Password : ").lower()
         if password == defaultPassword:
-            input("\tWelcome Manager !")
+            print(end="\n")
+            print(">>>>> Welcome Manager <<<<<".center(100), end="\n")
+            input()
             return True
         else:
-            input("Incorrect Password, Please try again !")
+            input("\tIncorrect Password, Please try again !")
             return False
 
     def addEmployee(self):
         global employeeFile
         clear()
-        print("\t- New Employee -")
-        name = input("\tEnter Name : ").title()
+        print(" NEW EMPLOYEE ".center(100,"-"), end="\n\n")
+        name = input("\tEnter Employee Name : ").title()
         userName = input("\tEnter User Name : ").lower()
         password = input("\tEnter Password : ").lower()
-        print("\tPassword :",password)
+        print("\n\t>>> Password Conformation :",password,"\n")
         employeeList = listInitializer(employeeFile)
-        employeeList.append({'name':name, 'userName':userName, 'password':password})
-        writeFile(employeeFile, employeeList)
-        input("Employee Added !")
+        if not any(employee['userName']==userName for employee in employeeList):
+            employeeList.append({'name':name, 'userName':userName, 'password':password})
+            writeFile(employeeFile, employeeList)
+            input("\tEmployee Added !")
+        else:
+            print("\t"+userName, "is already in use, Please try a different one !",end="")
+            input()
 
     def deleteEmployee(self):
         global employeeFile
         clear()
-        print("\t- Delete Employee -")
+        print(" DELETE EMPLOYEE ".center(100,"-"), end="\n\n")
         userName = input("\tEnter the User Name of the employee you wish to delete : ").lower()
         employeeList = listInitializer(employeeFile)
         if any(employee['userName'] == userName for employee in employeeList):
@@ -76,24 +82,28 @@ class manager():
                     if (choice == "y"):
                         del employeeList[index]
                         writeFile(employeeFile, employeeList)
-                        input("Employee Deleted")
+                        input("\tEmployee Deleted")
                         break
                     else:
-                        input("Cancelled")
+                        input("\tCancelled")
         else:
-            input("No such employee found !")
+            input("\tNo such employee found !")
 
     def viewEmployee(self):
         global employeeFile
-        clear()
         employeeList = listInitializer(employeeFile)
-        col_width = 30
-        header = ["NAME:", "USER NAME:", "PASSWORD:"]
-        print("-" * 28, "Employee List", "-" * 30, "\n")
-        print("".join(word.ljust(col_width) for word in header))
+        employeeCount=0
+        clear()
+        print(" EMPLOYEE LIST ".center(100,"-"), end="\n\n")
+        print("-" * 100)
+        print("NAME:".ljust(40), "USER NAME:".ljust(35), "PASSWORD:".ljust(18))
+        print("-" * 100)
         for employee in employeeList:
-            print("".join(str(data).ljust(col_width) for data in employee.values()))
-        print("\n")
+            print(employee['name'].ljust(40), employee['userName'].ljust(35), employee['password'].ljust(18))
+            employeeCount = employeeCount + 1
+        print("-" * 100)
+        print("Employee Count: "+str(employeeCount))
+        print("-" * 100)
         input("Press Enter to continue...")
 
     def viewInventory(self):
@@ -106,14 +116,22 @@ class manager():
                     productList = pickle.load(f)
         else:
             productList = []
-        col_width = 30
-        header = ["NAME:", "QUANTITY:", "PRICE:"]
+        totalAmount=0
+        totalItems=0
+        totalQuantity=0
         clear()
-        print("\n")
-        print("-" * 28, "INVENTORY", "-" * 30, "\n")
-        print("".join(word.ljust(col_width) for word in header))
+        print(" INVENTORY ".center(100,"-"), end="\n\n")
+        print("-" * 100)
+        print("NAME:".ljust(50),"QUANTITY:".rjust(18), "RATE:".rjust(25))
+        print("-" * 100)
         for product in productList:
-            print("".join(str(data).ljust(col_width) for data in product.values()))
+            print(product['name'].ljust(50),(str(product['quantity'])).rjust(18), (str(product['price'])).rjust(25))
+            totalItems = totalItems + 1
+            totalQuantity = totalQuantity + product['quantity']
+            totalAmount = totalAmount + (product['price']*product['quantity'])
+        print("-" * 100)
+        print(("ITEMS: "+str(totalItems)).ljust(30), ("QUANTITY: "+str(totalQuantity)).rjust(38), ("AMOUNT: "+str(totalAmount)).rjust(25))
+        print("-" * 100)
         print("\n")
         input("Press Enter to continue...")
 
@@ -130,19 +148,19 @@ class manager():
         while True:
             clear()
             flag = 0
-            print("\t- Adding Product -")
+            print(" NEW PRODUCT ".center(100,'-'),end="\n\n")
             name = input("\tEnter Name : ").title()
             for product in productList:
                 if product['name'] == name:
                     flag = 1
-                    print("The entered product:", name, ", already exists !\n")
+                    print("\tThe entered product:", name, ", already exists !\n")
                     break
             if flag == 0:
                 quantity = int(input("\tEnter Quantity : "))
                 price = float(input("\tEnter Price : "))
                 productList.append({'name':name, 'quantity':quantity, 'price':price})  # Adding new product dictionary to list
                 productList.sort(key=lambda product: product['name']) # to sort the list by productect names
-            choice = input("Do you want to add another product? (y/n) : ").lower()
+            choice = input("\tDo you want to add another product? (y/n) : ").lower()
             if choice == "n":
                 break
         with open(productFile, "wb") as f:
@@ -162,7 +180,7 @@ class manager():
         flag = 0
         suggestionList = []
         clear()
-        print("\t- Update Product -")
+        print(" UPDATE PRODUCT ".center(100,'-'),end="\n\n")
         name = input("\tEnter the Name of the product you wish to Update : ").title()
         for index, product in enumerate(productList):
             if product['name'] == name:
@@ -180,7 +198,7 @@ class manager():
                 suggestionList.append(index)
                 flag = 2
         if flag == 2:
-            print("The entered product:", name, ", does not exist !")
+            print("\tThe entered product:", name, ", does not exist !")
             print("\tDid you mean : ")
             for index in suggestionList:
                 print("\t---> ",productList[index]["name"], "? (y/n) : ", end="")
@@ -196,7 +214,7 @@ class manager():
                         productList[index]["price"] = float(input("\tEnter new Price : "))
                     break
         elif flag == 0:
-            print("The entered product:", name, ", does not exist !\n")
+            print("\tThe entered product:", name, ", does not exist !\n")
         suggestionList.clear()
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
@@ -216,7 +234,7 @@ class manager():
         index = 0
         suggestionList = []
         clear()
-        print("\t- Delete Product -")
+        print(" DELETE PRODUCT ".center(100,'-'),end="\n\n")
         name = input("\tEnter the Name of the product you wish to Delete : ").title()
         for i, product in enumerate(productList):
             if product["name"]== name:
@@ -243,7 +261,7 @@ class manager():
             del productList[index]
             print("\tDeleted")
         elif flag == 3:
-            print("The entered product:", name, ", does not exist !")
+            print("\tThe entered product:", name, ", does not exist !")
             print("\tDid you mean : ")
             for index in suggestionList:
                 print("\t---> ",productList[index]["name"], "? (y/n) : ", end="")
@@ -266,7 +284,7 @@ class manager():
                         print("\tCancelled")
                         break
         elif flag == 0:
-            print("The entered product:", name, ", does not exist !\n")
+            print("\tThe entered product:", name, ", does not exist !\n")
         suggestionList.clear()
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
@@ -275,12 +293,16 @@ class manager():
     def viewSales(self):
         global salesFile
         salesList = listInitializer(salesFile)
+        total=0
         clear()
-        print("-" * 40,"RETAIL SALES", "-" * 47, "\n")
+        print(" RETAIL SALES ".center(100,"-"),end="\n\n")
         print("-" * 100)
-        print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "TOTAL:".rjust(10))
+        print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
         print("-" * 100)
         for sales in salesList:
             print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+            total = total + sales['total']
+        print("-" * 100)
+        print(("TOTAL: "+str(total)).rjust(97))
         print("-" * 100)
         input("Press Enter to continue...")
