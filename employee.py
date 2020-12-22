@@ -67,7 +67,7 @@ class employee():
     def employeeLogin(self):
         global employeeFile
         clear()
-        print("\t- Employee Login -")
+        print(" EMPLOYEE LOGIN ".center(100,"-"),end="\n\n")
         userName = input("\tEnter User Name : ").lower()
         password = input("\tEnter Password : ").lower()
         employeeList = listInitializer(employeeFile)
@@ -79,14 +79,15 @@ class employee():
                     self.name = employee["name"]
                     self.userName = userName
                     self.password = password
-                    print("\tWelcome "+self.name+" !",end="")
+                    print(end="\n")
+                    print((">>>>> Welcome "+self.name+" <<<<<").center(100))
                     input()
                     return True
                 else:
-                    input("Incorrect Password, Please try again !")
+                    input("\tIncorrect Password, Please try again !")
                     return False
         if flag == 0:
-            input("Incorrect Username & Password, Please try again !")
+            input("\tIncorrect Username & Password, Please try again !")
             return False
 
     def viewInventory(self):
@@ -99,14 +100,22 @@ class employee():
                     productList = pickle.load(f)
         else:
             productList = []
-        col_width = 30
-        header = ["NAME:", "QUANTITY:", "PRICE:"]
+        totalAmount=0
+        totalItems=0
+        totalQuantity=0
         clear()
-        print("\n")
-        print("-" * 28, "INVENTORY", "-" * 30, "\n")
-        print("".join(word.ljust(col_width) for word in header))
+        print(" INVENTORY ".center(100,"-"), end="\n\n")
+        print("-" * 100)
+        print("NAME:".ljust(50),"QUANTITY:".rjust(18), "RATE:".rjust(25))
+        print("-" * 100)
         for product in productList:
-            print("".join(str(data).ljust(col_width) for data in product.values()))
+            print(product['name'].ljust(50),(str(product['quantity'])).rjust(18), (str(product['price'])).rjust(25))
+            totalItems = totalItems + 1
+            totalQuantity = totalQuantity + product['quantity']
+            totalAmount = totalAmount + (product['price']*product['quantity'])
+        print("-" * 100)
+        print(("ITEMS: "+str(totalItems)).ljust(30), ("QUANTITY: "+str(totalQuantity)).rjust(38), ("AMOUNT: "+str(totalAmount)).rjust(25))
+        print("-" * 100)
         print("\n")
         input("Press Enter to continue...")
 
@@ -124,17 +133,29 @@ class employee():
         cartList=[]
         col_width = 27
         header = ["ITEM:", "QTY:", "RATE:","AMOUNT:"]
+        summary=[]
         total=0
         items=0
         qty=0
         while True:
+            total=0
+            items=0
+            qty=0
             clear()
-            print("-" * 45, "CART", "-" * 49)
+            print(" CART ".center(100,'-'), end="\n\n")
             print("-" * 100)
-            print("SN.".ljust(5),"".join(word.ljust(col_width) for word in header))
+            print("SN.".ljust(6),"ITEM:".ljust(40),"QTY:".rjust(10),"RATE:".rjust(18),"AMOUNT:".rjust(18))
             print("-" * 100)
             for sn, item in enumerate(cartList):
-                print(str(sn+1).ljust(5),"".join(str(data).ljust(col_width) for data in item.values()))
+                print(str(sn+1).ljust(6),item['name'].ljust(40),str(item['quantity']).rjust(10),str(item['rate']).rjust(18),str(item['amount']).rjust(18))
+            print(end="\n")
+            print("-"*100,end= "\n")
+            for item in cartList:
+                total = item['amount'] + total
+                qty = item['quantity'] + qty
+                items=len(cartList)
+            summary=["ITEMS: "+str(items), "QTY: "+str(qty), "TOTAL: "+str(total)]
+            print(summary[0].ljust(30),summary[1].rjust(27), summary[2].rjust(37))
             print("-"*100)
             print("\n")
             print("\t1.Add Item")
@@ -142,8 +163,9 @@ class employee():
             print("\t3.Delete Item")
             print("\t4.Generate Bill")
             print("\t5.Cancel\n")
-            choice = int(input("Enter choice : "))
-            if choice == 1:
+            print("-"*100, end="\n\n")
+            choice = input("Enter choice : ")
+            if choice == '1':
                 suggestionList = []
                 flag = 0
                 name = input("\tEnter Item Name : ").title()
@@ -158,33 +180,34 @@ class employee():
                                 cartList.append({'name':name, 'quantity':quantity, 'rate':product['price'], 'amount': amount})
                                 break
                             else:
-                                input("Insufficient stock !")
+                                input("\tInsufficient stock !")
                                 break
                         elif similar(name, product["name"]) >= 0.6:
                             if not any(product["name"] == item['name'] for item in cartList):
                                 suggestionList.append(index)
                                 flag = 2
                     if flag==0:
-                        input("Product does not exist !")
+                        input("\tProduct does not exist !")
                     elif flag == 2:
-                        print("The entered item:", name, ", does not exist !")
+                        print("\tThe entered item:", name, ", does not exist !")
                         print("\tDid you mean : ")
                         for index in suggestionList:
                             print("\t---> ",productList[index]["name"], "? (y/n) : ", end="")
                             choice = input().lower()
                             if choice == "y":
-                                print("Available Quantity:", str(productList[index]["quantity"]))
+                                print("\tAvailable Quantity:", str(productList[index]["quantity"]))
                                 quantity = int(input("\tEnter Quantity : "))
                                 if quantity <= productList[index]["quantity"]:
                                     amount=quantity*productList[index]['price']
                                     cartList.append({'name':productList[index]["name"], 'quantity':quantity, 'rate':productList[index]['price'], 'amount': amount})
                                     break
                                 else:
-                                    input("Insufficient stock !")
+                                    input("\tInsufficient stock !")
                                     break
                 else:
-                    input("item already exists in cart, try update item")
-            elif choice == 2:
+                    input("\tItem already exists in cart, try Update item")
+
+            elif choice == '2':
                 suggestionList = []
                 flag = 0
                 name = input("\tEnter Item Name : ").title()
@@ -201,16 +224,16 @@ class employee():
                                     item['amount']=amount
                                     break
                                 else:
-                                    input("Insufficient stock !")
+                                    input("\tInsufficient stock !")
                                     break
                         break
                     elif similar(name, item["name"]) >= 0.6:
                         suggestionList.append(index)
                         flag = 2
                 if flag == 0:
-                    input("Item does not exist in cart !")
+                    input("\tItem does not exist in cart !")
                 elif flag == 2:
-                    print("The entered item:", name, ", does not exist in the cart !")
+                    print("\tThe entered item:", name, ", does not exist in the cart !")
                     print("\tDid you mean : ")
                     for index in suggestionList:
                         print("\t---> ",cartList[index]["name"], "? (y/n) : ", end="")
@@ -226,10 +249,11 @@ class employee():
                                         cartList[index]['amount']=amount
                                         break
                                     else:
-                                        input("Insufficient stock !")
+                                        input("\tInsufficient stock !")
                                         break
                             break
-            elif choice == 3:
+
+            elif choice == '3':
                 suggestionList = []
                 flag=0
                 name = input("\tEnter the Name of the item you wish to Delete : ").title()
@@ -245,9 +269,9 @@ class employee():
                         suggestionList.append(index)
                         flag = 2
                 if flag==0:
-                    input("Item does not exist in cart !")
+                    input("\tItem does not exist in cart !")
                 elif flag == 2:
-                    print("The entered item:", name, ", does not exist in the cart !")
+                    print("\tThe entered item:", name, ", does not exist in the cart !")
                     print("\tDid you mean : ")
                     for index in suggestionList:
                         print("\t---> ",cartList[index]["name"], "? (y/n) : ", end="")
@@ -259,51 +283,48 @@ class employee():
                                 del cartList[index]
                                 break
 
-            elif choice == 4:
-                items=len(cartList)
+            elif choice == '4':
                 if items > 0:
-                    customerName=input("Enter the name of the customer : ").title()
-                    customerNumber=input("Enter the Phone no. of the customer : ")
-                    choice=input("Complete Transaction? (y/n) : ").lower()
+                    customerName=input("\tEnter the name of the customer : ").title()
+                    customerNumber=input("\tEnter the Phone no. of the customer : ")
+                    choice=input("\tComplete Transaction? (y/n) : ").lower()
                     if choice == 'y':
                         clear()
                         now = datetime.now()
                         date=now.strftime("%d/%m/%Y")
                         time=now.strftime("%H:%M")
                         for item in cartList:
-                            total = item['amount'] + total
-                            qty = item['quantity'] + qty
                             for product in productList:
                                 if product['name'] == item['name']:
                                     product['quantity'] = product['quantity']-item['quantity']
                         with open(productFile, "wb") as f:
                             pickle.dump(productList, f)
-                        summary=["ITEMS: "+str(items), "QTY: "+str(qty), "TOTAL: "+str(total)]
                         billNumber = billNumberGenerator()
-                        print("-" * 40,"RETAIL BILL", "-" * 47, "\n")
-                        print(" "*35,"THE GARRISON PVT LTD.")
-                        print(" "*41,"Kakkanad")
-                        print(" "*38, "Kerala - 682039")
-                        print(" "*36, "Phone: 0484 266 0999")
+                        print(" RETAIL BILL ".center(100,'-'),end= "\n\n")
+                        print("THE GARRISON PVT LTD.".center(100))
+                        print("Kakkanad".center(100))
+                        print("Kerala - 682039".center(100))
+                        print("Phone: 0484 266 0999".center(100))
                         print("-" * 100)
                         print("ISSUED TO:".ljust(80),"Date: "+date)
                         print(customerName.ljust(80),"Time: "+time)
                         print(customerNumber.ljust(80),"Bill No: "+billNumber)
                         print(" "*81+"Cashier: "+self.userName)
                         print("-" * 100)
-                        print("SN.".ljust(5),"".join(word.ljust(col_width) for word in header))
+                        print("SN.".ljust(6),"ITEM:".ljust(40),"QTY:".rjust(10),"RATE:".rjust(18),"AMOUNT:".rjust(18))
                         print("-" * 100)
                         for sn, item in enumerate(cartList):
-                            print(str(sn+1).ljust(5),"".join(str(data).ljust(col_width) for data in item.values()))
-                        print("-" * 100)
-                        print(summary[0].ljust(31),summary[1].ljust(50), summary[2])
+                            print(str(sn+1).ljust(6),item['name'].ljust(40),str(item['quantity']).rjust(10),str(item['rate']).rjust(18),str(item['amount']).rjust(18))
+                        print(end="\n")
+                        print("-"*100,end= "\n")
+                        print(summary[0].ljust(30),summary[1].rjust(27), summary[2].rjust(37))
                         print("-" * 100)
                         print("\n\n")
                         print("\tTERMS & CONDITIONS:")
                         print("\t1.Goods once sold will not be taken back.")
                         print("\t2.Exchange if any, will be accepted within 7 days only.")
                         print("\n")
-                        print("\t\t\t\t    THANK YOU, VISIT AGAIN")
+                        print(">>>> THANK YOU, VISIT AGAIN <<<<".center(100))
                         print("-" * 100)
                         salesList = listInitializer(salesFile)
                         salesList.append({
@@ -311,14 +332,28 @@ class employee():
                         'billNumber':billNumber, 'cartList':cartList, 'quantity':qty, 'items':items, 'total':total
                         })
                         writeFile(salesFile,salesList)
-                        input("Press any key to continue . . .")
-                        total=0
-                        items=0
-                        qty=0
                         cartList.clear()
+                        input("Press any key to continue . . .")
                 else:
-                    input("Empty Cart !")
-            elif choice == 5:
+                    input("\tEmpty Cart !")
+            elif choice == '5':
                 break
             else:
                 input("Please enter a valid option !\n")
+    def mySales(self):
+        global salesFile
+        salesList = listInitializer(salesFile)
+        total=0
+        clear()
+        print(" MY SALES ".center(100,"-"),end="\n\n")
+        print("-" * 100)
+        print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
+        print("-" * 100)
+        for sales in salesList:
+            if sales['employeeUserName'] == self.userName:
+                print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+                total = total + sales['total']
+        print("-" * 100)
+        print(("TOTAL: "+str(total)).rjust(97))
+        print("-" * 100)
+        input("Press Enter to continue...")
