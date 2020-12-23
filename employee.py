@@ -62,10 +62,19 @@ class employee():
         self.userName=""
         self.age=0
         self.password=""
-        self.sale=0
+        self.todaysSales=0
+
+    def employeeMenuHeader(self):
+        now = datetime.now()
+        date = now.strftime("%d/%m/%Y")
+        print(("DATE: "+date).ljust(20), ("USER: "+self.userName).ljust(45), ("TODAY'S SALES: "+str(self.todaysSales)).rjust(30))
+        print("-"*100, end="\n\n")
 
     def employeeLogin(self):
         global employeeFile
+        global salesFile
+        now = datetime.now()
+        date = now.strftime("%d/%m/%Y")
         clear()
         print(" EMPLOYEE LOGIN ".center(100,"-"),end="\n\n")
         userName = input("\tEnter User Name : ").lower()
@@ -81,6 +90,10 @@ class employee():
                     self.password = password
                     print(end="\n")
                     print((">>>>> Welcome "+self.name+" <<<<<").center(100))
+                    salesList = listInitializer(salesFile)
+                    for sales in salesList:
+                        if sales['employeeUserName'] == self.userName and sales['date'] == date:
+                            self.todaysSales = self.todaysSales + sales['total']
                     input()
                     return True
                 else:
@@ -104,8 +117,8 @@ class employee():
         totalItems=0
         totalQuantity=0
         clear()
-        print(" INVENTORY ".center(100,"-"), end="\n\n")
-        print("-" * 100)
+        print(" INVENTORY ".center(100,"-"), end="\n")
+        self.employeeMenuHeader()
         print("NAME:".ljust(50),"QUANTITY:".rjust(18), "RATE:".rjust(25))
         print("-" * 100)
         for product in productList:
@@ -116,7 +129,6 @@ class employee():
         print("-" * 100)
         print(("ITEMS: "+str(totalItems)).ljust(30), ("QUANTITY: "+str(totalQuantity)).rjust(38), ("AMOUNT: "+str(totalAmount)).rjust(25))
         print("-" * 100)
-        print("\n")
         input("Press Enter to continue...")
 
     def cart(self):
@@ -131,8 +143,6 @@ class employee():
         else:
             productList = []
         cartList=[]
-        col_width = 27
-        header = ["ITEM:", "QTY:", "RATE:","AMOUNT:"]
         summary=[]
         total=0
         items=0
@@ -142,8 +152,8 @@ class employee():
             items=0
             qty=0
             clear()
-            print(" CART ".center(100,'-'), end="\n\n")
-            print("-" * 100)
+            print(" CART ".center(100,'-'), end="\n")
+            self.employeeMenuHeader()
             print("SN.".ljust(6),"ITEM:".ljust(40),"QTY:".rjust(10),"RATE:".rjust(18),"AMOUNT:".rjust(18))
             print("-" * 100)
             for sn, item in enumerate(cartList):
@@ -332,6 +342,7 @@ class employee():
                         'billNumber':billNumber, 'cartList':cartList, 'quantity':qty, 'items':items, 'total':total
                         })
                         writeFile(salesFile,salesList)
+                        self.todaysSales = self.todaysSales + total
                         cartList.clear()
                         input("Press any key to continue . . .")
                 else:
@@ -345,8 +356,8 @@ class employee():
         salesList = listInitializer(salesFile)
         total=0
         clear()
-        print(" MY SALES ".center(100,"-"),end="\n\n")
-        print("-" * 100)
+        print(" MY SALES ".center(100,"-"),end="\n")
+        self.employeeMenuHeader()
         print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
         print("-" * 100)
         for sales in salesList:
