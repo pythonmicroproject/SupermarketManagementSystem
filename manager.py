@@ -37,6 +37,12 @@ class manager():
         self.name = ""
         self.password = ""
 
+    def managerMenuHeader(self):
+        now = datetime.now()
+        date = now.strftime("%d/%m/%Y")
+        print(("DATE: "+date).ljust(85), ("MANAGER").ljust(13))
+        print("-"*100, end="\n\n")
+
     def managerLogin(self):
         defaultPassword = "admin"
         clear()
@@ -54,7 +60,8 @@ class manager():
     def addEmployee(self):
         global employeeFile
         clear()
-        print(" NEW EMPLOYEE ".center(100,"-"), end="\n\n")
+        print(" NEW EMPLOYEE ".center(100,"-"), end="\n")
+        self.managerMenuHeader()
         name = input("\tEnter Employee Name : ").title()
         userName = input("\tEnter User Name : ").lower()
         password = input("\tEnter Password : ").lower()
@@ -71,7 +78,8 @@ class manager():
     def deleteEmployee(self):
         global employeeFile
         clear()
-        print(" DELETE EMPLOYEE ".center(100,"-"), end="\n\n")
+        print(" DELETE EMPLOYEE ".center(100,"-"), end="\n")
+        self.managerMenuHeader()
         userName = input("\tEnter the User Name of the employee you wish to delete : ").lower()
         employeeList = listInitializer(employeeFile)
         if any(employee['userName'] == userName for employee in employeeList):
@@ -94,8 +102,8 @@ class manager():
         employeeList = listInitializer(employeeFile)
         employeeCount=0
         clear()
-        print(" EMPLOYEE LIST ".center(100,"-"), end="\n\n")
-        print("-" * 100)
+        print(" EMPLOYEE LIST ".center(100,"-"), end="\n")
+        self.managerMenuHeader()
         print("NAME:".ljust(40), "USER NAME:".ljust(35), "PASSWORD:".ljust(18))
         print("-" * 100)
         for employee in employeeList:
@@ -120,8 +128,8 @@ class manager():
         totalItems=0
         totalQuantity=0
         clear()
-        print(" INVENTORY ".center(100,"-"), end="\n\n")
-        print("-" * 100)
+        print(" INVENTORY ".center(100,"-"), end="\n")
+        self.managerMenuHeader()
         print("NAME:".ljust(50),"QUANTITY:".rjust(18), "RATE:".rjust(25))
         print("-" * 100)
         for product in productList:
@@ -132,7 +140,6 @@ class manager():
         print("-" * 100)
         print(("ITEMS: "+str(totalItems)).ljust(30), ("QUANTITY: "+str(totalQuantity)).rjust(38), ("AMOUNT: "+str(totalAmount)).rjust(25))
         print("-" * 100)
-        print("\n")
         input("Press Enter to continue...")
 
     def addProduct(self):
@@ -148,7 +155,8 @@ class manager():
         while True:
             clear()
             flag = 0
-            print(" NEW PRODUCT ".center(100,'-'),end="\n\n")
+            print(" NEW PRODUCT ".center(100,'-'),end="\n")
+            self.managerMenuHeader()
             name = input("\tEnter Name : ").title()
             for product in productList:
                 if product['name'] == name:
@@ -180,7 +188,8 @@ class manager():
         flag = 0
         suggestionList = []
         clear()
-        print(" UPDATE PRODUCT ".center(100,'-'),end="\n\n")
+        print(" UPDATE PRODUCT ".center(100,'-'),end="\n")
+        self.managerMenuHeader()
         name = input("\tEnter the Name of the product you wish to Update : ").title()
         for index, product in enumerate(productList):
             if product['name'] == name:
@@ -234,7 +243,8 @@ class manager():
         index = 0
         suggestionList = []
         clear()
-        print(" DELETE PRODUCT ".center(100,'-'),end="\n\n")
+        print(" DELETE PRODUCT ".center(100,'-'),end="\n")
+        self.managerMenuHeader()
         name = input("\tEnter the Name of the product you wish to Delete : ").title()
         for i, product in enumerate(productList):
             if product["name"]== name:
@@ -295,8 +305,8 @@ class manager():
         salesList = listInitializer(salesFile)
         total=0
         clear()
-        print(" RETAIL SALES ".center(100,"-"),end="\n\n")
-        print("-" * 100)
+        print(" RETAIL SALES ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
         print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
         print("-" * 100)
         for sales in salesList:
