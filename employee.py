@@ -7,6 +7,7 @@ productFile = "productFile.txt"  # name and path of the file containg products l
 employeeFile = "employeeFile.txt" # name and path of the file containg employee list
 billGeneratorFile = "billGeneratorFile.txt"
 salesFile = "salesFile.txt"
+storeInfoFile = "storeInfoFile.txt"
 
 def clear():
     # for windows
@@ -29,6 +30,17 @@ def listInitializer(file):
     else:
         list = []
     return list
+
+def storeInfoInitializer(file):
+    if os.path.exists(file):  # True if file exists
+        if os.stat(file).st_size == 0:  # True if file is empty
+            storeInfo = {'name':'Store Name', 'city':'City/Town/Village', 'state':'State', 'pincode':'Pincode', 'phone':'Phone No.', 't&c1':"1.First terms and condition", 't&c2':"2.Second terms and condition"}
+        else:
+            with open(file, "rb") as f:
+                storeInfo = pickle.load(f)
+    else:
+        storeInfo = {'name':'Store Name', 'city':'City/Town/Village', 'state':'State', 'pincode':'Pincode', 'phone':'Phone No.', 't&c1':"1.First terms and condition", 't&c2':"2.Second terms and condition"}
+    return storeInfo
 
 def writeFile(file, list):
     with open(file, "wb") as f:
@@ -60,9 +72,8 @@ class employee():
     def __init__(self):
         self.name=""
         self.userName=""
-        self.age=0
         self.password=""
-        self.todaysSales=0
+        self.todaysSales= 0
 
     def employeeMenuHeader(self):
         now = datetime.now()
@@ -134,6 +145,7 @@ class employee():
     def cart(self):
         global productFile
         global salesFile
+        global storeInfoFile
         if os.path.exists(productFile):  # True if file exists
             if os.stat(productFile).st_size == 0:  # True if file is empty
                 productList = []
@@ -303,6 +315,7 @@ class employee():
                         now = datetime.now()
                         date=now.strftime("%d/%m/%Y")
                         time=now.strftime("%H:%M")
+                        storeInfo = storeInfoInitializer(storeInfoFile)
                         for item in cartList:
                             for product in productList:
                                 if product['name'] == item['name']:
@@ -311,10 +324,10 @@ class employee():
                             pickle.dump(productList, f)
                         billNumber = billNumberGenerator()
                         print(" RETAIL BILL ".center(100,'-'),end= "\n\n")
-                        print("THE GARRISON PVT LTD.".center(100))
-                        print("Kakkanad".center(100))
-                        print("Kerala - 682039".center(100))
-                        print("Phone: 0484 266 0999".center(100))
+                        print(storeInfo['name'].center(100))
+                        print(storeInfo['city'].center(100))
+                        print((storeInfo['state']+" - "+storeInfo['pincode']).center(100))
+                        print(("Phone: "+storeInfo['phone']).center(100))
                         print("-" * 100)
                         print("ISSUED TO:".ljust(80),"Date: "+date)
                         print(customerName.ljust(80),"Time: "+time)
@@ -331,8 +344,8 @@ class employee():
                         print("-" * 100)
                         print("\n\n")
                         print("\tTERMS & CONDITIONS:")
-                        print("\t1.Goods once sold will not be taken back.")
-                        print("\t2.Exchange if any, will be accepted within 7 days only.")
+                        print("\t"+storeInfo['t&c1'])
+                        print("\t"+storeInfo['t&c2'])
                         print("\n")
                         print(">>>> THANK YOU, VISIT AGAIN <<<<".center(100))
                         print("-" * 100)
@@ -368,3 +381,23 @@ class employee():
         print(("TOTAL: "+str(total)).rjust(97))
         print("-" * 100)
         input("Press Enter to continue...")
+
+    def changeEmployeePassword(self):
+        clear()
+        print(" CHANGE PASSWORD ".center(100,"-"),end="\n")
+        self.employeeMenuHeader()
+        print("\tHello "+self.name+", Please enter your current Password : ", end='')
+        password = input()
+        global employeeFile
+        employeeList = listInitializer(employeeFile)
+        for employee in employeeList:
+            if employee['userName'] == self.userName:
+                if employee['password'] == password:
+                    password = input("\tEnter new Password : ")
+                    print("\n\t>>> Password Conformation :",password)
+                    employee['password'] = password
+                    self.password = password
+                    writeFile(employeeFile, employeeList)
+                    input("\tPassword changed, Press Enter to continue...")
+                else:
+                    input("\tIncorrect Password, Please try again !")
