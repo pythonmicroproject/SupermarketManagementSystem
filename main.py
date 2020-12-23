@@ -16,7 +16,8 @@ def runManager():
         return
     while True:
         clear()
-        print(" MANAGER MENU ".center(100,'-'),end= "\n\n")
+        print(" MANAGER MENU ".center(100,'-'),end= "\n")
+        user.managerMenuHeader()
         print("\t1.Inventory Management\n")
         print("\t2.Employee Management\n")
         print("\t3.Sales Management\n")
@@ -26,7 +27,8 @@ def runManager():
         if choice == '1':
             while True:
                 clear()
-                print(" INVENTORY MANAGEMENT ".center(100,'-'),end= "\n\n")
+                print(" INVENTORY MANAGEMENT ".center(100,'-'),end= "\n")
+                user.managerMenuHeader()
                 print("\t1.View Inventory\n")
                 print("\t2.Add New Product\n")
                 print("\t3.Update Product\n")
@@ -50,7 +52,8 @@ def runManager():
         elif choice == '2':
             while True:
                 clear()
-                print(" EMPLOYEE MANAGEMENT ".center(100,'-'),end= "\n\n")
+                print(" EMPLOYEE MANAGEMENT ".center(100,'-'),end= "\n")
+                user.managerMenuHeader()
                 print("\t1.Add New Employee\n")
                 print("\t2.Delete Employee\n")
                 print("\t3.Employee List\n")
@@ -71,7 +74,8 @@ def runManager():
         elif choice == '3':
             while True:
                 clear()
-                print(" SALES MANAGEMENT ".center(100,'-'),end= "\n\n")
+                print(" SALES MANAGEMENT ".center(100,'-'),end= "\n")
+                user.managerMenuHeader()
                 print("\t1.View Sales\n")
                 print("\t2.Go Back...\n")
                 print("-"*100, end="\n\n")
@@ -94,7 +98,8 @@ def runEmployee():
         return
     while True:
         clear()
-        print(" EMPLOYEE MENU ".center(100,'-'),end= "\n\n")
+        print(" EMPLOYEE MENU ".center(100,'-'),end= "\n")
+        user.employeeMenuHeader()
         print("\t1.View Inventory\n")
         print("\t2.Billing\n")
         print("\t3.Account\n")
@@ -108,7 +113,8 @@ def runEmployee():
         elif choice == 3:
             while True:
                 clear()
-                print(" ACCOUNT ".center(100,'-'),end= "\n\n")
+                print(" ACCOUNT ".center(100,'-'),end= "\n")
+                user.employeeMenuHeader()
                 print("\t1.My Sales\n")
                 print("\t2.....\n")
                 print("\t3.....\n")
