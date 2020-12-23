@@ -21,7 +21,8 @@ def runManager():
         print("\t1.Inventory Management\n")
         print("\t2.Employee Management\n")
         print("\t3.Sales Management\n")
-        print("\t4.LOG OUT\n")
+        print("\t4.Update Store Data\n")
+        print("\t5.LOG OUT\n")
         print("-"*100, end="\n\n")
         choice = input("Enter choice : ")
         if choice == '1':
@@ -88,6 +89,8 @@ def runManager():
                     input("Please enter a valid option !\n")
 
         elif choice == '4':
+            user.updateStoreInfo()
+        elif choice == '5':
             break
         else:
             input("Please enter a valid option !\n")
@@ -116,7 +119,7 @@ def runEmployee():
                 print(" ACCOUNT ".center(100,'-'),end= "\n")
                 user.employeeMenuHeader()
                 print("\t1.My Sales\n")
-                print("\t2.....\n")
+                print("\t2.Change Password\n")
                 print("\t3.....\n")
                 print("\t4.Go Back...\n")
                 print("-"*100, end="\n\n")
@@ -124,7 +127,7 @@ def runEmployee():
                 if choice == '1':
                     user.mySales()
                 elif choice == '2':
-                    pass
+                    user.changeEmployeePassword()
                 elif choice == '3':
                     pass
                 elif choice == '4':
@@ -138,7 +141,14 @@ def runEmployee():
             input("Please enter a valid option !\n")
 
 while True:
+    storeInfo = manager.storeInfoInitializer("storeInfoFile.txt")
     clear()
+    print("-"*100)
+    print(storeInfo['name'].center(100))
+    print(storeInfo['city'].center(100))
+    print((storeInfo['state']+" - "+storeInfo['pincode']).center(100))
+    print(("Phone: "+storeInfo['phone']).center(100))
+    print(end="\n")
     print(" MENU ".center(100,"-"),end="\n\n")
     print("\t1.Employee\n")
     print("\t2.Manager\n")
