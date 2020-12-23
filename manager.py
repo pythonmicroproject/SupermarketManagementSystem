@@ -6,6 +6,7 @@ from datetime import datetime
 productFile = "productFile.txt"  # name and path of the file containg products list
 employeeFile = "employeeFile.txt" # name and path of the file containg employee list
 salesFile = "salesFile.txt"
+storeInfoFile = "storeInfoFile.txt"
 
 def listInitializer(file):
     if os.path.exists(file):  # True if file exists
@@ -17,6 +18,17 @@ def listInitializer(file):
     else:
         list = []
     return list
+
+def storeInfoInitializer(file):
+    if os.path.exists(file):  # True if file exists
+        if os.stat(file).st_size == 0:  # True if file is empty
+            storeInfo = {'name':'Store Name', 'city':'City/Town/Village', 'state':'State', 'pincode':'Pincode', 'phone':'Phone No.', 't&c1':"1.First terms and condition", 't&c2':"2.Second terms and condition"}
+        else:
+            with open(file, "rb") as f:
+                storeInfo = pickle.load(f)
+    else:
+        storeInfo = {'name':'Store Name', 'city':'City/Town/Village', 'state':'State', 'pincode':'Pincode', 'phone':'Phone No.', 't&c1':"1.First terms and condition", 't&c2':"2.Second terms and condition"}
+    return storeInfo
 
 def writeFile(file, list):
     with open(file, "wb") as f:
@@ -316,3 +328,54 @@ class manager():
         print(("TOTAL: "+str(total)).rjust(97))
         print("-" * 100)
         input("Press Enter to continue...")
+
+    def updateStoreInfo(self):
+        global storeInfoFile
+        storeInfo = storeInfoInitializer(storeInfoFile)
+        clear()
+        print(" UPDATE STORE DATA ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
+        print("\tCurrent Store Name:", storeInfo['name'])
+        choice = input("\tDo you wish to update ? (y/n) : ").lower()
+        if choice == "y":
+            storeInfo['name'] = (input("\tEnter new Store Name : "))
+            print("\t Updated !")
+
+        print("\tCurrent City/Town/Village:", storeInfo['city'])
+        choice = input("\tDo you wish to update ? (y/n) : ").lower()
+        if choice == "y":
+            storeInfo['city'] = (input("\tEnter new City/Town/Village : "))
+            print("\t Updated !")
+
+        print("\tCurrent State:", storeInfo['state'])
+        choice = input("\tDo you wish to update ? (y/n) : ").lower()
+        if choice == "y":
+            storeInfo['state'] = (input("\tEnter new State : "))
+            print("\t Updated !")
+
+        print("\tCurrent Pincode:", storeInfo['pincode'])
+        choice = input("\tDo you wish to update ? (y/n) : ").lower()
+        if choice == "y":
+            storeInfo['pincode'] = (input("\tEnter new Pincode : "))
+            print("\t Updated !")
+
+        print("\tCurrent Phone Number:", storeInfo['phone'])
+        choice = input("\tDo you wish to update ? (y/n) : ").lower()
+        if choice == "y":
+            storeInfo['phone'] = (input("\tEnter new Phone Number : "))
+            print("\t Updated !")
+
+        print("\tTerms & Conditions:")
+        print("\tCurrent T&C 1:", storeInfo['t&c1'])
+        choice = input("\tDo you wish to update ? (y/n) : ").lower()
+        if choice == "y":
+            storeInfo['t&c1'] = (input("\tEnter new T&C 1 : "))
+            print("\t Updated !")
+        print("\tCurrent T&C 2:", storeInfo['t&c2'])
+        choice = input("\tDo you wish to update ? (y/n) : ").lower()
+        if choice == "y":
+            storeInfo['t&c2'] = (input("\tEnter new T&C 2 : "))
+            print("\t Updated !")
+
+        writeFile(storeInfoFile, storeInfo)
+        input("\nPress Enter to continue...")
