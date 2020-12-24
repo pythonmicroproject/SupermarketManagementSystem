@@ -477,3 +477,151 @@ class manager():
                 break
         if flag == 0:
             input("\tNo Bill found !")
+
+    def salesBreakdown(self):
+        global salesFile
+        global employeeFile
+        salesList = listInitializer(salesFile)
+        employeeList = listInitializer(employeeFile)
+        employeeUserNames = []
+        overallTotal = 0
+        now = datetime.now()
+        todaysDate = now.strftime("%d/%m/%Y")
+        clear()
+        print(" SALES BREAKDOWN ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
+        date = input("\tEnter the date ( ALL / TODAY / dd-mm-yyyy ) : ").upper()
+
+        if date == "ALL":
+            for sales in salesList:
+                if sales['employeeUserName'] not in employeeUserNames:
+                    employeeUserNames.append(sales['employeeUserName'])
+            if len(employeeUserNames) == 0:
+                input("\tNo Sales found !")
+                return
+            clear()
+            print(" SALES BREAKDOWN ".center(100,"-"),end="\n")
+            self.managerMenuHeader()
+            print("ALL SALES".center(100),end="\n")
+            for userName in employeeUserNames:
+                total = 0
+                if not any(employee['userName'] == userName for employee in employeeList): # if employee is inactive, i.e. Not in the employee list
+                    print("\tEMPLOYEE : "+userName+" (INACTIVE)")
+                    print("-" * 100)
+                    print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
+                    print("-" * 100)
+                    for sales in salesList:
+                        if sales['employeeUserName'] == userName:
+                            print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+                            total = total + sales['total']
+                            overallTotal = overallTotal + sales['total']
+                    print("-" * 100)
+                    print(("TOTAL: "+str(total)).rjust(97))
+                    print("-" * 100, end="\n\n")
+                else:
+                    print("\tEMPLOYEE : "+userName)
+                    print("-" * 100)
+                    print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
+                    print("-" * 100)
+                    for sales in salesList:
+                        if sales['employeeUserName'] == userName:
+                            print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+                            total = total + sales['total']
+                            overallTotal = overallTotal + sales['total']
+                    print("-" * 100)
+                    print(("TOTAL: "+str(total)).rjust(97))
+                    print("-" * 100, end="\n\n")
+            print(("OVERALL TOTAL: "+str(overallTotal)).rjust(97))
+            print("-" * 100)
+
+        elif date == "TODAY" or date == todaysDate:
+            for sales in salesList:
+                if sales['date'] == todaysDate:
+                    if sales['employeeUserName'] not in employeeUserNames:
+                        employeeUserNames.append(sales['employeeUserName'])
+            if len(employeeUserNames) == 0:
+                input("\tNo Sales found !")
+                return
+            clear()
+            print(" SALES BREAKDOWN ".center(100,"-"),end="\n")
+            self.managerMenuHeader()
+            print("TODAY'S SALES".center(100),end="\n")
+            for userName in employeeUserNames:
+                total = 0
+                if not any(employee['userName'] == userName for employee in employeeList): # if employee is inactive, i.e. Not in the employee list
+                    print("\tEMPLOYEE : "+userName+" (INACTIVE)")
+                    print("-" * 100)
+                    print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
+                    print("-" * 100)
+                    for sales in salesList:
+                        if sales['date'] == todaysDate:
+                            if sales['employeeUserName'] == userName:
+                                print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+                                total = total + sales['total']
+                                overallTotal = overallTotal + sales['total']
+                    print("-" * 100)
+                    print(("TOTAL: "+str(total)).rjust(97))
+                    print("-" * 100, end="\n\n")
+                else:
+                    print("\tEMPLOYEE : "+userName)
+                    print("-" * 100)
+                    print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
+                    print("-" * 100)
+                    for sales in salesList:
+                        if sales['date'] == todaysDate:
+                            if sales['employeeUserName'] == userName:
+                                print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+                                total = total + sales['total']
+                                overallTotal = overallTotal + sales['total']
+                    print("-" * 100)
+                    print(("TOTAL: "+str(total)).rjust(97))
+                    print("-" * 100, end="\n\n")
+            print(("OVERALL TOTAL: "+str(overallTotal)).rjust(97))
+            print("-" * 100)
+
+        else:
+            for sales in salesList:
+                if sales['date'] == date:
+                    if sales['employeeUserName'] not in employeeUserNames:
+                        employeeUserNames.append(sales['employeeUserName'])
+            if len(employeeUserNames) == 0:
+                input("\tNo Sales found !")
+                return
+            clear()
+            print(" SALES BREAKDOWN ".center(100,"-"),end="\n")
+            self.managerMenuHeader()
+            print(("SALES AS ON : "+date).center(100),end="\n")
+            for userName in employeeUserNames:
+                total = 0
+                if not any(employee['userName'] == userName for employee in employeeList): # if employee is inactive, i.e. Not in the employee list
+                    print("\tEMPLOYEE : "+userName+" (INACTIVE)")
+                    print("-" * 100)
+                    print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
+                    print("-" * 100)
+                    for sales in salesList:
+                        if sales['date'] == date:
+                            if sales['employeeUserName'] == userName:
+                                print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+                                total = total + sales['total']
+                                overallTotal = overallTotal + sales['total']
+                    print("-" * 100)
+                    print(("TOTAL: "+str(total)).rjust(97))
+                    print("-" * 100, end="\n\n")
+                else:
+                    print("\tEMPLOYEE : "+userName)
+                    print("-" * 100)
+                    print("DATE:".ljust(18), "TIME:".ljust(22), "BILL NO:".ljust(18), "CASHIER:".ljust(25), "AMOUNT:".rjust(10))
+                    print("-" * 100)
+                    for sales in salesList:
+                        if sales['date'] == date:
+                            if sales['employeeUserName'] == userName:
+                                print(sales['date'].ljust(18), sales['time'].ljust(22), sales['billNumber'].ljust(18), sales['employeeUserName'].ljust(25), str(sales['total']).rjust(10))
+                                total = total + sales['total']
+                                overallTotal = overallTotal + sales['total']
+                    print("-" * 100)
+                    print(("TOTAL: "+str(total)).rjust(97))
+                    print("-" * 100, end="\n\n")
+            print(("OVERALL TOTAL: "+str(overallTotal)).rjust(97))
+            print("-" * 100)
+
+        input("\nPress Enter to continue...")
