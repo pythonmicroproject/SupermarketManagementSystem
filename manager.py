@@ -379,3 +379,101 @@ class manager():
 
         writeFile(storeInfoFile, storeInfo)
         input("\nPress Enter to continue...")
+
+    def searchProduct(self):
+        global productFile
+        global salesFile
+        productList = listInitializer(productFile)
+        salesList = listInitializer(salesFile)
+        suggestionList = []
+        productData = {}
+        clear()
+        flag = 0
+        print(" SEARCH PRODUCT ".center(100,'-'),end="\n")
+        self.managerMenuHeader()
+        name = input("\tEnter the Name of the product : ").title()
+        for index, product in enumerate(productList):
+            if product['name'] == name:
+                productData.update({'name':name, 'qty':product['quantity'], 'rate':product['price'], 'soldQty':0, 'soldAmount':0.0})
+                flag = 1
+                break
+            elif similar(name, product["name"])>= 0.6:
+                suggestionList.append(index)
+                flag = 2
+        if flag == 0:
+            print("\tThe entered product:", name, ", does not exist !",end="")
+            input()
+            return
+        elif flag == 2:
+            print("\tThe entered product:", name, ", does not exist !")
+            print("\tDid you mean : ")
+            for index in suggestionList:
+                print("\t---> ",productList[index]["name"], "? (y/n) : ", end="")
+                choice = input().lower()
+                if choice == "y":
+                    name = productList[index]["name"]
+                    productData.update({'name':name, 'qty':productList[index]['quantity'], 'rate':productList[index]['price'], 'soldQty':0, 'soldAmount':0.0})
+                    flag = 1
+                    break
+
+        if flag == 1:
+            for sales in salesList:
+                for item in sales['cartList']:
+                    if item['name'] == name:
+                        productData['soldQty'] = productData['soldQty'] + item['quantity']
+                        productData['soldAmount'] = productData['soldAmount'] + item['amount']
+            clear()
+            print(" SEARCH PRODUCT ".center(100,'-'),end="\n")
+            self.managerMenuHeader()
+            print("NAME:".ljust(28),"QUANTITY:".rjust(10), "RATE:".rjust(18), "SOLD:".rjust(18), "SALES WORTH:".rjust(18))
+            print("-" * 100)
+            print(productData['name'].ljust(28),str(productData['qty']).rjust(10), str(productData['rate']).rjust(18), str(productData['soldQty']).rjust(18), str(productData['soldAmount']).rjust(18))
+            input("\nPress Enter to continue...")
+        elif flag == 2:
+            input("\nPress Enter to continue...")
+
+    def searchBill(self):
+        global salesFile
+        global storeInfoFile
+        salesList = listInitializer(salesFile)
+        flag = 0
+        clear()
+        print(" SEARCH BILL ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
+        billNumber = input("\tEnter the Bill Number : ")
+        for sales in salesList:
+            if sales['billNumber'] == billNumber:
+                flag = 1
+                storeInfo = storeInfoInitializer(storeInfoFile)
+                summary=["ITEMS: "+str(sales['items']), "QTY: "+str(sales['quantity']), "TOTAL: "+str(sales['total'])]
+                clear()
+                print(" RETAIL BILL ~ COPY ".center(100,'-'),end= "\n\n")
+                print(storeInfo['name'].center(100))
+                print(storeInfo['city'].center(100))
+                print((storeInfo['state']+" - "+storeInfo['pincode']).center(100))
+                print(("Phone: "+storeInfo['phone']).center(100))
+                print("-" * 100)
+                print("ISSUED TO:".ljust(80),"Date: "+sales['date'])
+                print(sales['customerName'].ljust(80),"Time: "+sales['time'])
+                print(sales['customerNumber'].ljust(80),"Bill No: "+sales['billNumber'])
+                print(" "*81+"Cashier: "+sales['employeeUserName'])
+                print("-" * 100)
+                print("SN.".ljust(6),"ITEM:".ljust(40),"QTY:".rjust(10),"RATE:".rjust(18),"AMOUNT:".rjust(18))
+                print("-" * 100)
+                for sn, item in enumerate(sales['cartList']):
+                    print(str(sn+1).ljust(6),item['name'].ljust(40),str(item['quantity']).rjust(10),str(item['rate']).rjust(18),str(item['amount']).rjust(18))
+                print(end="\n")
+                print("-"*100,end= "\n")
+                print(summary[0].ljust(30),summary[1].rjust(27), summary[2].rjust(37))
+                print("-" * 100)
+                print("\n\n")
+                print("\tTERMS & CONDITIONS:")
+                print("\t"+storeInfo['t&c1'])
+                print("\t"+storeInfo['t&c2'])
+                print("\n")
+                print(">>>> THANK YOU, VISIT AGAIN <<<<".center(100))
+                print("-" * 100)
+                input("\nPress Enter to continue...")
+                break
+        if flag == 0:
+            input("\tNo Bill found !")
