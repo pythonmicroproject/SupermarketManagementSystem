@@ -82,7 +82,8 @@ def runManager():
                 user.managerMenuHeader()
                 print("\t1.View Sales\n")
                 print("\t2.Search Bill\n")
-                print("\t3.Go Back...\n")
+                print("\t3.Sales Breakdown\n")
+                print("\t4.Go Back...\n")
                 print("-"*100, end="\n\n")
                 choice = input("Enter choice : ")
                 if choice == '1':
@@ -90,6 +91,8 @@ def runManager():
                 elif choice == '2':
                     user.searchBill()
                 elif choice == '3':
+                    user.salesBreakdown()
+                elif choice == '4':
                     break
                 else:
                     input("Please enter a valid option !\n")
