@@ -625,3 +625,51 @@ class manager():
             print("-" * 100)
 
         input("\nPress Enter to continue...")
+
+    def bestSellingProducts(self):
+        global salesFile
+        salesList = listInitializer(salesFile)
+        soldProductsList = []
+        for sales in salesList:
+            for item in sales['cartList']:
+                if not any(item['name'] == soldProduct['name'] for soldProduct in soldProductsList):
+                    soldProductsList.append({'name':item['name'], 'qty':item['quantity']})
+                else:
+                    for soldProduct in soldProductsList:
+                        if item['name'] == soldProduct['name']:
+                            soldProduct['qty'] = soldProduct['qty'] + item['quantity']
+
+        clear()
+        print(" BEST SELLING PRODUCTS ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
+        if len(soldProductsList) == 0:
+            print("\tInsufficient sales data, Please try again later",end="\n\n")
+        else:
+            soldProductsList.sort(key=lambda soldProduct: soldProduct['qty'], reverse = True) # sorts list in decreasing order of sold quantity
+            print("NAME:".ljust(70),"QUANTITY SOLD:".rjust(23))
+            print("-" * 100)
+            for soldProduct in soldProductsList:
+                print(soldProduct['name'].ljust(70),(str(soldProduct['qty'])).rjust(23))
+            print("-" * 100)
+        input("\nPress Enter to continue...")
+
+    def lowQuantityProducts(self):
+        global productFile
+        productList = listInitializer(productFile)
+        clear()
+        print(" LOW QUANTITY PRODUCTS (QTY < 10) ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
+        if len(productList) == 0:
+            print("\tNo Items found in Inventory, Please try again later",end="\n\n")
+        else:
+            productList.sort(key=lambda product: product['quantity']) # sorts product list in increasing order of available quantity
+            if productList[0]['quantity'] < 10:    # checks if the lowest quantity is less than 10
+                print("NAME:".ljust(50),"QUANTITY:".rjust(18), "RATE:".rjust(25))
+                print("-" * 100)
+                for product in productList:
+                    if product['quantity'] < 10:
+                        print(product['name'].ljust(50),(str(product['quantity'])).rjust(18), (str(product['price'])).rjust(25))
+                print("-" * 100)
+            else:
+                print("\tAll Items are sufficiently stocked (qty >= 10)",end="\n\n")
+        input("\nPress Enter to continue...")
