@@ -116,14 +116,7 @@ class employee():
 
     def viewInventory(self):
         global productFile
-        if os.path.exists(productFile):  # True if file exists
-            if os.stat(productFile).st_size == 0:  # True if file is empty
-                productList = []
-            else:
-                with open(productFile, "rb") as f:
-                    productList = pickle.load(f)
-        else:
-            productList = []
+        productList = listInitializer(productFile)
         totalAmount=0
         totalItems=0
         totalQuantity=0
@@ -140,20 +133,13 @@ class employee():
         print("-" * 100)
         print(("ITEMS: "+str(totalItems)).ljust(30), ("QUANTITY: "+str(totalQuantity)).rjust(38), ("AMOUNT: "+str(totalAmount)).rjust(25))
         print("-" * 100)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def cart(self):
         global productFile
         global salesFile
         global storeInfoFile
-        if os.path.exists(productFile):  # True if file exists
-            if os.stat(productFile).st_size == 0:  # True if file is empty
-                productList = []
-            else:
-                with open(productFile, "rb") as f:
-                    productList = pickle.load(f)
-        else:
-            productList = []
+        productList = listInitializer(productFile)
         cartList=[]
         summary=[]
         total=0
@@ -380,7 +366,7 @@ class employee():
         print("-" * 100)
         print(("TOTAL: "+str(total)).rjust(97))
         print("-" * 100)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def changeEmployeePassword(self):
         clear()
@@ -394,6 +380,9 @@ class employee():
             if employee['userName'] == self.userName:
                 if employee['password'] == password:
                     password = input("\tEnter new Password : ")
+                    if len(password) == 0 or password.isspace(): #checks whether the password is empty or only contains spaces
+                        input("\tInvalid new Password, Please try again !")
+                        break
                     print("\n\t>>> Password Conformation :",password)
                     employee['password'] = password
                     self.password = password
@@ -401,3 +390,4 @@ class employee():
                     input("\tPassword changed, Press Enter to continue...")
                 else:
                     input("\tIncorrect Password, Please try again !")
+                    break
