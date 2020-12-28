@@ -21,7 +21,7 @@ def runManager():
         print("\t1.Inventory Management\n")
         print("\t2.Employee Management\n")
         print("\t3.Sales Management\n")
-        print("\t4.Update Store Data\n")
+        print("\t4.Update Store Information\n")
         print("\t5.LOG OUT\n")
         print("-"*100, end="\n\n")
         choice = input("Enter choice : ")
@@ -33,7 +33,7 @@ def runManager():
                 print("\t1.View Inventory\n")
                 print("\t2.Search Product\n")
                 print("\t3.Best Selling Products\n")
-                print("\t4.Low Quantity Products\n")
+                print("\t4.Restock Suggestions\n")
                 print("\t5.Add New Product\n")
                 print("\t6.Update Product\n")
                 print("\t7.Delete Product\n")
@@ -47,7 +47,7 @@ def runManager():
                 elif choice == '3':
                     user.bestSellingProducts()
                 elif choice == '4':
-                    user.lowQuantityProducts()
+                    user.restockSuggestions()
                 elif choice == '5':
                     user.addProduct()
                 elif choice == '6':
@@ -175,3 +175,4 @@ while True:
         break
     else:
         input("Please enter a valid option !\n")
+
