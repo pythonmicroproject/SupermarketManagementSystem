@@ -75,8 +75,17 @@ class manager():
         print(" NEW EMPLOYEE ".center(100,"-"), end="\n")
         self.managerMenuHeader()
         name = input("\tEnter Employee Name : ").title()
+        if len(name) == 0 or name.isspace() : #checks whether the Name is empty or only contains spaces
+            input("\tInvalid Name, Please try again !")
+            return
         userName = input("\tEnter User Name : ").lower()
+        if len(userName) == 0 or userName.isspace() : #checks whether the userName is empty or only contains spaces
+            input("\tInvalid User Name, Please try again !")
+            return
         password = input("\tEnter Password : ").lower()
+        if len(password) == 0 or password.isspace() : #checks whether the password is empty or only contains spaces
+            input("\tInvalid Password, Please try again !")
+            return
         print("\n\t>>> Password Conformation :",password,"\n")
         employeeList = listInitializer(employeeFile)
         if not any(employee['userName']==userName for employee in employeeList):
@@ -124,18 +133,11 @@ class manager():
         print("-" * 100)
         print("Employee Count: "+str(employeeCount))
         print("-" * 100)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def viewInventory(self):
         global productFile
-        if os.path.exists(productFile):  # True if file exists
-            if os.stat(productFile).st_size == 0:  # True if file is empty
-                productList = []
-            else:
-                with open(productFile, "rb") as f:
-                    productList = pickle.load(f)
-        else:
-            productList = []
+        productList = listInitializer(productFile)
         totalAmount=0
         totalItems=0
         totalQuantity=0
@@ -152,24 +154,20 @@ class manager():
         print("-" * 100)
         print(("ITEMS: "+str(totalItems)).ljust(30), ("QUANTITY: "+str(totalQuantity)).rjust(38), ("AMOUNT: "+str(totalAmount)).rjust(25))
         print("-" * 100)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def addProduct(self):
         global productFile
-        if os.path.exists(productFile):  # True if file exists
-            if os.stat(productFile).st_size == 0:  # True if file is empty
-                productList = []
-            else:
-                with open(productFile, "rb") as f:
-                    productList = pickle.load(f)
-        else:
-            productList = []
+        productList = listInitializer(productFile)
         while True:
             clear()
             flag = 0
             print(" NEW PRODUCT ".center(100,'-'),end="\n")
             self.managerMenuHeader()
             name = input("\tEnter Name : ").title()
+            if len(name) == 0 or name.isspace(): #checks whether the product name is empty or only contains spaces
+                input("\tInvalid Product Name, Please try again !")
+                break
             for product in productList:
                 if product['name'] == name:
                     flag = 1
@@ -179,24 +177,17 @@ class manager():
                 quantity = int(input("\tEnter Quantity : "))
                 price = float(input("\tEnter Price : "))
                 productList.append({'name':name, 'quantity':quantity, 'price':price})  # Adding new product dictionary to list
-                productList.sort(key=lambda product: product['name']) # to sort the list by productect names
+                productList.sort(key=lambda product: product['name']) # to sort the list by product names (alphabetical order)
             choice = input("\tDo you want to add another product? (y/n) : ").lower()
             if choice == "n":
                 break
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def updateProduct(self):
         global productFile
-        if os.path.exists(productFile):  # True if file exists
-            if os.stat(productFile).st_size == 0:  # True if file is empty
-                productList = []
-            else:
-                with open(productFile, "rb") as f:
-                    productList = pickle.load(f)
-        else:
-            productList = []
+        productList = listInitializer(productFile)
         flag = 0
         suggestionList = []
         clear()
@@ -239,18 +230,11 @@ class manager():
         suggestionList.clear()
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def deleteProduct(self):
         global productFile
-        if os.path.exists(productFile):  # True if file exists
-            if os.stat(productFile).st_size == 0:  # True if file is empty
-                productList = []
-            else:
-                with open(productFile, "rb") as f:
-                    productList = pickle.load(f)
-        else:
-            productList = []
+        productList = listInitializer(productFile)
         flag = 0
         index = 0
         suggestionList = []
@@ -310,7 +294,7 @@ class manager():
         suggestionList.clear()
         with open(productFile, "wb") as f:
             pickle.dump(productList, f)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def viewSales(self):
         global salesFile
@@ -327,13 +311,13 @@ class manager():
         print("-" * 100)
         print(("TOTAL: "+str(total)).rjust(97))
         print("-" * 100)
-        input("Press Enter to continue...")
+        input("\nPress Enter to continue...")
 
     def updateStoreInfo(self):
         global storeInfoFile
         storeInfo = storeInfoInitializer(storeInfoFile)
         clear()
-        print(" UPDATE STORE DATA ".center(100,"-"),end="\n")
+        print(" UPDATE STORE INFORMATION ".center(100,"-"),end="\n")
         self.managerMenuHeader()
         print("\tCurrent Store Name:", storeInfo['name'])
         choice = input("\tDo you wish to update ? (y/n) : ").lower()
@@ -653,17 +637,18 @@ class manager():
             print("-" * 100)
         input("\nPress Enter to continue...")
 
-    def lowQuantityProducts(self):
+    def restockSuggestions(self):
         global productFile
         productList = listInitializer(productFile)
         clear()
-        print(" LOW QUANTITY PRODUCTS (QTY < 10) ".center(100,"-"),end="\n")
+        print(" RESTOCK SUGGESTIONS ".center(100,"-"),end="\n")
         self.managerMenuHeader()
         if len(productList) == 0:
             print("\tNo Items found in Inventory, Please try again later",end="\n\n")
         else:
             productList.sort(key=lambda product: product['quantity']) # sorts product list in increasing order of available quantity
-            if productList[0]['quantity'] < 10:    # checks if the lowest quantity is less than 10
+            if productList[0]['quantity'] < 10:    # checks if the quantity of the lowest quantity product is less than 10
+                print("\t The following Items are running short (qty < 10) :\n")
                 print("NAME:".ljust(50),"QUANTITY:".rjust(18), "RATE:".rjust(25))
                 print("-" * 100)
                 for product in productList:
