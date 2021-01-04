@@ -175,4 +175,3 @@ while True:
         break
     else:
         input("Please enter a valid option !\n")
-
