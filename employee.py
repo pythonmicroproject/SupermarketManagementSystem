@@ -306,8 +306,7 @@ class employee():
                             for product in productList:
                                 if product['name'] == item['name']:
                                     product['quantity'] = product['quantity']-item['quantity']
-                        with open(productFile, "wb") as f:
-                            pickle.dump(productList, f)
+                        writeFile(productFile, productList)
                         billNumber = billNumberGenerator()
                         print(" RETAIL BILL ".center(100,'-'),end= "\n\n")
                         print(storeInfo['name'].center(100))
