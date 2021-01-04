@@ -41,6 +41,7 @@ def clear():
     # for mac and linux(os.name is 'posix')
     else:
         os.system('clear')
+
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
@@ -181,8 +182,7 @@ class manager():
             choice = input("\tDo you want to add another product? (y/n) : ").lower()
             if choice == "n":
                 break
-        with open(productFile, "wb") as f:
-            pickle.dump(productList, f)
+        writeFile(productFile, productList)
         input("\nPress Enter to continue...")
 
     def updateProduct(self):
@@ -228,8 +228,7 @@ class manager():
         elif flag == 0:
             print("\tThe entered product:", name, ", does not exist !\n")
         suggestionList.clear()
-        with open(productFile, "wb") as f:
-            pickle.dump(productList, f)
+        writeFile(productFile, productList)
         input("\nPress Enter to continue...")
 
     def deleteProduct(self):
@@ -258,6 +257,7 @@ class manager():
                     flag = 2
                     index = i
                     break
+                break
             elif similar(name, product["name"])>= 0.6:
                 suggestionList.append(i)
                 flag = 3
@@ -292,8 +292,7 @@ class manager():
         elif flag == 0:
             print("\tThe entered product:", name, ", does not exist !\n")
         suggestionList.clear()
-        with open(productFile, "wb") as f:
-            pickle.dump(productList, f)
+        writeFile(productFile, productList)
         input("\nPress Enter to continue...")
 
     def viewSales(self):
