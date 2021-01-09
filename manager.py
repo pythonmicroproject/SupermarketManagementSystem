@@ -2,6 +2,7 @@ import pickle
 import os
 from difflib import SequenceMatcher
 from datetime import datetime
+import textwrap
 
 productFile = "productFile.txt"  # name and path of the file containg products list
 employeeFile = "employeeFile.txt" # name and path of the file containg employee list
@@ -162,6 +163,18 @@ class manager():
         productList = listInitializer(productFile)
         while True:
             clear()
+
+            """ NEW CATEGORY CODE """
+            categoryList = []
+            for product in productList:
+                if product['category'] not in categoryList:
+                    categoryList.append(product['category'])
+            categoryList.sort()
+            categories = ', '.join(categoryList)
+            wrapper = textwrap.TextWrapper(width=50,initial_indent='\t', subsequent_indent='\t')
+            categories = wrapper.fill(text=categories)
+            """-------------------"""
+
             flag = 0
             print(" NEW PRODUCT ".center(100,'-'),end="\n")
             self.managerMenuHeader()
@@ -177,9 +190,18 @@ class manager():
             if flag == 0:
                 quantity = int(input("\tEnter Quantity : "))
                 price = float(input("\tEnter Price : "))
-                productList.append({'name':name, 'quantity':quantity, 'price':price})  # Adding new product dictionary to list
+
+                """ NEW CATEGORY CODE """
+                print("\n\tAvailable Categories :")
+                print(categories)
+                category = input("\n\tEnter an Existing or New Category (skip for OTHERS) :").upper()
+                if len(category) == 0 or category.isspace(): #assigns category as OTHERS if category is empty or only contains spaces
+                    category = "OTHERS"
+                """-------------------"""
+
+                productList.append({'name':name, 'quantity':quantity, 'price':price, 'category':category})  # Adding new product dictionary to list
                 productList.sort(key=lambda product: product['name']) # to sort the list by product names (alphabetical order)
-            choice = input("\tDo you want to add another product? (y/n) : ").lower()
+            choice = input("\n\tDo you want to add another product? (y/n) : ").lower()
             if choice == "n":
                 break
         writeFile(productFile, productList)
@@ -188,6 +210,18 @@ class manager():
     def updateProduct(self):
         global productFile
         productList = listInitializer(productFile)
+
+        """ NEW CATEGORY CODE """
+        categoryList = []
+        for product in productList:
+            if product['category'] not in categoryList:
+                categoryList.append(product['category'])
+        categoryList.sort()
+        categories = ', '.join(categoryList)
+        wrapper = textwrap.TextWrapper(width=50,initial_indent='\t', subsequent_indent='\t')
+        categories = wrapper.fill(text=categories)
+        """-------------------"""
+
         flag = 0
         suggestionList = []
         clear()
@@ -205,6 +239,20 @@ class manager():
                 choice = input("\tDo you wish to update Price? (y/n) : ").lower()
                 if choice == "y":
                     product["price"] = float(input("\tEnter new Price : "))
+
+                """ NEW CATEGORY CODE """
+                print("\tCurrent Category:", product["category"])
+                choice = input("\tDo you wish to update Category? (y/n) : ").lower()
+                if choice == "y":
+                    print("\n\tAvailable Categories :")
+                    print(categories)
+                    category = input("\n\tEnter an Existing or New Category (skip for OTHERS) :").upper()
+                    if len(category) == 0 or category.isspace(): #assigns category as OTHERS if category is empty or only contains spaces
+                        product['category'] = "OTHERS"
+                    else:
+                        product['category'] = category
+                """-------------------"""
+
                 break
             elif similar(name, product["name"]) >= 0.6:
                 suggestionList.append(index)
@@ -224,6 +272,20 @@ class manager():
                     choice = input("\tDo you wish to update Price? (y/n) : ").lower()
                     if choice == "y":
                         productList[index]["price"] = float(input("\tEnter new Price : "))
+
+                    """ NEW CATEGORY CODE """
+                    print("\tCurrent Category:", productList[index]['category'])
+                    choice = input("\tDo you wish to update Category? (y/n) : ").lower()
+                    if choice == "y":
+                        print("\n\tAvailable Categories :")
+                        print(categories)
+                        category = input("\n\tEnter an Existing or New Category (skip for OTHERS) :").upper()
+                        if len(category) == 0 or category.isspace(): #assigns category as OTHERS if category is empty or only contains spaces
+                            productList[index]['category'] = "OTHERS"
+                        else:
+                            productList[index]['category'] = category
+                    """-------------------"""
+
                     break
         elif flag == 0:
             print("\tThe entered product:", name, ", does not exist !\n")
@@ -377,7 +439,7 @@ class manager():
         name = input("\tEnter the Name of the product : ").title()
         for index, product in enumerate(productList):
             if product['name'] == name:
-                productData.update({'name':name, 'qty':product['quantity'], 'rate':product['price'], 'soldQty':0, 'soldAmount':0.0})
+                productData.update({'name':name,'category':product['category'], 'qty':product['quantity'], 'rate':product['price'], 'soldQty':0, 'soldAmount':0.0})
                 flag = 1
                 break
             elif similar(name, product["name"])>= 0.6:
@@ -395,7 +457,7 @@ class manager():
                 choice = input().lower()
                 if choice == "y":
                     name = productList[index]["name"]
-                    productData.update({'name':name, 'qty':productList[index]['quantity'], 'rate':productList[index]['price'], 'soldQty':0, 'soldAmount':0.0})
+                    productData.update({'name':name, 'category':productList[index]['category'], 'qty':productList[index]['quantity'], 'rate':productList[index]['price'], 'soldQty':0, 'soldAmount':0.0})
                     flag = 1
                     break
 
@@ -408,6 +470,7 @@ class manager():
             clear()
             print(" SEARCH PRODUCT ".center(100,'-'),end="\n")
             self.managerMenuHeader()
+            print(("Category : "+productData['category']).center(100),end= "\n\n")
             print("NAME:".ljust(28),"QUANTITY:".rjust(10), "RATE:".rjust(18), "SOLD:".rjust(18), "SALES WORTH:".rjust(18))
             print("-" * 100)
             print(productData['name'].ljust(28),str(productData['qty']).rjust(10), str(productData['rate']).rjust(18), str(productData['soldQty']).rjust(18), str(productData['soldAmount']).rjust(18))
@@ -473,7 +536,7 @@ class manager():
         clear()
         print(" SALES BREAKDOWN ".center(100,"-"),end="\n")
         self.managerMenuHeader()
-        date = input("\tEnter the date ( ALL / TODAY / dd-mm-yyyy ) : ").upper()
+        date = input("\tEnter the date ( ALL / TODAY / 'dd/mm/yyyy' ) : ").upper()
 
         if date == "ALL":
             for sales in salesList:
@@ -656,4 +719,69 @@ class manager():
                 print("-" * 100)
             else:
                 print("\tAll Items are sufficiently stocked (qty >= 10)",end="\n\n")
+        input("\nPress Enter to continue...")
+
+    def searchCategory(self):
+        global productFile
+        productList = listInitializer(productFile)
+        clear()
+        print(" SEARCH CATEGORY ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
+        categoryList = []
+        for product in productList:
+            if product['category'] not in categoryList:
+                categoryList.append(product['category'])
+        categoryList.sort()
+        print("\tAvailable Categories :",end="\n\n")
+        categories = ', '.join(categoryList)
+        wrapper = textwrap.TextWrapper(width=70,initial_indent='\t', subsequent_indent='\t')
+        categories = wrapper.fill(text=categories)
+        print (categories)
+        category = input("\n\tEnter a Category from the above options : ").upper()
+        if category not in categoryList:
+            input("\tCategory Not Found!")
+        else:
+            totalAmount=0
+            totalItems=0
+            totalQuantity=0
+            clear()
+            print(" SEARCH CATEGORY ".center(100,"-"),end="\n")
+            self.managerMenuHeader()
+            print(('----- '+category+' -----').center(100), end="\n\n")
+            print("NAME:".ljust(50),"QUANTITY:".rjust(18), "RATE:".rjust(25))
+            print("-"*100)
+            for product in productList:
+                if product['category'] == category:
+                    print(product['name'].ljust(50),(str(product['quantity'])).rjust(18), (str(product['price'])).rjust(25))
+                    totalItems = totalItems + 1
+                    totalQuantity = totalQuantity + product['quantity']
+                    totalAmount = totalAmount + (product['price']*product['quantity'])
+            print("-" * 100)
+            print(("ITEMS: "+str(totalItems)).ljust(30), ("QUANTITY: "+str(totalQuantity)).rjust(38), ("AMOUNT: "+str(totalAmount)).rjust(25))
+            print("-" * 100)
+            input("\nPress Enter to continue...")
+
+    def employeePerformance(self):
+        global salesFile
+        global employeeFile
+        salesList = listInitializer(salesFile)
+        employeeList = listInitializer(employeeFile)
+        employeeData = []
+        for employee in employeeList:
+            bills = 0
+            total = 0.0
+            for sales in salesList:
+                if sales['employeeUserName'] == employee['userName']:
+                    bills = bills+1
+                    total = total+sales['total']
+            employeeData.append({'userName':employee['userName'], 'bills':bills, 'total':total})
+            employeeData.sort(key=lambda employee: employee['total'], reverse = True) # sorts list in decreasing order of total sales of each employee
+        clear()
+        print(" EMPLOYEE PERFORMANCE ".center(100,"-"),end="\n")
+        self.managerMenuHeader()
+        print("USERNAME:".ljust(50),"BILLS:".rjust(18), "TOTAL:".rjust(25))
+        print("-" * 100)
+        for employee in employeeData:
+            print(employee['userName'].ljust(50),(str(employee['bills'])).rjust(18), (str(employee['total'])).rjust(25))
+        print("-" * 100)
         input("\nPress Enter to continue...")
