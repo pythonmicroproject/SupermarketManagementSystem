@@ -163,8 +163,6 @@ class manager():
         productList = listInitializer(productFile)
         while True:
             clear()
-
-            """ NEW CATEGORY CODE """
             categoryList = []
             for product in productList:
                 if product['category'] not in categoryList:
@@ -173,8 +171,6 @@ class manager():
             categories = ', '.join(categoryList)
             wrapper = textwrap.TextWrapper(width=50,initial_indent='\t', subsequent_indent='\t')
             categories = wrapper.fill(text=categories)
-            """-------------------"""
-
             flag = 0
             print(" NEW PRODUCT ".center(100,'-'),end="\n")
             self.managerMenuHeader()
@@ -190,15 +186,11 @@ class manager():
             if flag == 0:
                 quantity = int(input("\tEnter Quantity : "))
                 price = float(input("\tEnter Price : "))
-
-                """ NEW CATEGORY CODE """
                 print("\n\tAvailable Categories :")
                 print(categories)
                 category = input("\n\tEnter an Existing or New Category (skip for OTHERS) :").upper()
                 if len(category) == 0 or category.isspace(): #assigns category as OTHERS if category is empty or only contains spaces
                     category = "OTHERS"
-                """-------------------"""
-
                 productList.append({'name':name, 'quantity':quantity, 'price':price, 'category':category})  # Adding new product dictionary to list
                 productList.sort(key=lambda product: product['name']) # to sort the list by product names (alphabetical order)
             choice = input("\n\tDo you want to add another product? (y/n) : ").lower()
@@ -210,8 +202,6 @@ class manager():
     def updateProduct(self):
         global productFile
         productList = listInitializer(productFile)
-
-        """ NEW CATEGORY CODE """
         categoryList = []
         for product in productList:
             if product['category'] not in categoryList:
@@ -220,8 +210,6 @@ class manager():
         categories = ', '.join(categoryList)
         wrapper = textwrap.TextWrapper(width=50,initial_indent='\t', subsequent_indent='\t')
         categories = wrapper.fill(text=categories)
-        """-------------------"""
-
         flag = 0
         suggestionList = []
         clear()
@@ -239,8 +227,6 @@ class manager():
                 choice = input("\tDo you wish to update Price? (y/n) : ").lower()
                 if choice == "y":
                     product["price"] = float(input("\tEnter new Price : "))
-
-                """ NEW CATEGORY CODE """
                 print("\tCurrent Category:", product["category"])
                 choice = input("\tDo you wish to update Category? (y/n) : ").lower()
                 if choice == "y":
@@ -251,8 +237,6 @@ class manager():
                         product['category'] = "OTHERS"
                     else:
                         product['category'] = category
-                """-------------------"""
-
                 break
             elif similar(name, product["name"]) >= 0.6:
                 suggestionList.append(index)
@@ -272,8 +256,6 @@ class manager():
                     choice = input("\tDo you wish to update Price? (y/n) : ").lower()
                     if choice == "y":
                         productList[index]["price"] = float(input("\tEnter new Price : "))
-
-                    """ NEW CATEGORY CODE """
                     print("\tCurrent Category:", productList[index]['category'])
                     choice = input("\tDo you wish to update Category? (y/n) : ").lower()
                     if choice == "y":
@@ -284,8 +266,6 @@ class manager():
                             productList[index]['category'] = "OTHERS"
                         else:
                             productList[index]['category'] = category
-                    """-------------------"""
-
                     break
         elif flag == 0:
             print("\tThe entered product:", name, ", does not exist !\n")
