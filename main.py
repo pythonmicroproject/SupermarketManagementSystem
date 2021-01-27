@@ -32,12 +32,13 @@ def runManager():
                 user.managerMenuHeader()
                 print("\t1.View Inventory\n")
                 print("\t2.Search Product\n")
-                print("\t3.Best Selling Products\n")
-                print("\t4.Restock Suggestions\n")
-                print("\t5.Add New Product\n")
-                print("\t6.Update Product\n")
-                print("\t7.Delete Product\n")
-                print("\t8.Go Back...\n")
+                print("\t3.Search Category\n")
+                print("\t4.Best Selling Products\n")
+                print("\t5.Restock Suggestions\n")
+                print("\t6.Add New Product\n")
+                print("\t7.Update Product\n")
+                print("\t8.Delete Product\n")
+                print("\t9.Go Back...\n")
                 print("-"*100, end="\n\n")
                 choice = input("Enter choice : ")
                 if choice == '1':
@@ -45,16 +46,18 @@ def runManager():
                 elif choice == '2':
                     user.searchProduct()
                 elif choice == '3':
-                    user.bestSellingProducts()
+                    user.searchCategory()
                 elif choice == '4':
-                    user.restockSuggestions()
+                    user.bestSellingProducts()
                 elif choice == '5':
-                    user.addProduct()
+                    user.restockSuggestions()
                 elif choice == '6':
-                    user.updateProduct()
+                    user.addProduct()
                 elif choice == '7':
-                    user.deleteProduct()
+                    user.updateProduct()
                 elif choice == '8':
+                    user.deleteProduct()
+                elif choice == '9':
                     break
                 else:
                     input("Please enter a valid option !\n")
@@ -65,18 +68,21 @@ def runManager():
                 print(" EMPLOYEE MANAGEMENT ".center(100,'-'),end= "\n")
                 user.managerMenuHeader()
                 print("\t1.Employee List\n")
-                print("\t2.Delete Employee\n")
+                print("\t2.Employee Performance\n")
                 print("\t3.Add New Employee\n")
-                print("\t4.Go Back...\n")
+                print("\t4.Delete Employee\n")
+                print("\t5.Go Back...\n")
                 print("-"*100, end="\n\n")
                 choice = input("Enter choice : ")
                 if choice == '1':
                     user.viewEmployee()
                 elif choice == '2':
-                    user.deleteEmployee()
+                    user.employeePerformance()
                 elif choice == '3':
                     user.addEmployee()
                 elif choice == '4':
+                    user.deleteEmployee()
+                elif choice == '5':
                     break
                 else:
                     input("Please enter a valid option !\n")
