@@ -66,7 +66,7 @@ All the above are standard built-in python modules.
  >**Note:** the password for manager login is  "**admin**"
  
  ## Team Members
- [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/orgs/pythonmicroproject/people)   
+ [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/pythonmicroproject)   
 -  Alan Benny
 -  Antony Kollannur
 -  Hafis K
